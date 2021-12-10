@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import FirebaseAuth
 class LoginViewController: UIViewController {
 
     private var scrollView: UIScrollView = {
@@ -100,7 +100,7 @@ class LoginViewController: UIViewController {
         scrollView.frame = view.bounds
         let size = scrollView.width/3
         imageView.frame = CGRect(x: (scrollView.width-size)/2,
-                                 y: 60,
+                                 y: 20,
                                  width: size,
                                  height: size)
         
@@ -132,6 +132,21 @@ class LoginViewController: UIViewController {
               }
         
 //        Firebase Log In
+        FirebaseAuth.Auth.auth().signIn(withEmail: email,
+                                        password: passWord,
+                                        completion: {[weak self] authResult, Error in
+            guard let strongSelf = self else {
+                return
+            }
+            guard let result = authResult, Error == nil else{
+                print("Fail to Log In user with email: \(email)")
+                return
+            }
+            let user = result.user
+            print("Logged In: \(user)")
+            strongSelf.navigationController?.dismiss(animated: true, completion: nil)
+        })
+        
     }
     
     func alertUserLoginError(){
